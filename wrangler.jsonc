@@ -1,0 +1,27 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "isp-erp",
+  "main": "./workers/app.ts",
+  "compatibility_date": "2026-10-23",
+  "compatibility_flags": ["nodejs_compat"],
+  "observability": { "enabled": true },
+  "assets": {
+    "directory": "./build/client"
+  },
+  "triggers": {
+    "crons": ["0 2 * * *"]
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "isp-erp-db",
+      "database_id": "YOUR_DATABASE_ID_HERE"
+    }
+  ],
+  "kv_namespaces": [
+    {
+      "binding": "CACHE",
+      "id": "YOUR_KV_NAMESPACE_ID_HERE"
+    }
+  ]
+}
