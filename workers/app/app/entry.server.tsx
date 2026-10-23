@@ -59,4 +59,16 @@ function handleBrowserRequest(
       {
         onShellReady() {
           shellRendered = true;
-       
+          const body = new PassThrough();
+          const stream = createReadableStreamFromReadable(body);
+          responseHeaders.set("Content-Type", "text/html");
+          resolve(new Response(stream, { headers: responseHeaders, status: responseStatusCode }));
+          pipe(body);
+        },
+        onShellError(error: unknown) { reject(error); },
+        onError(error: unknown) { responseStatusCode = 500; if (shellRendered) console.error(error); },
+      }
+    );
+    setTimeout(abort, ABORT_DELAY);
+  });
+}
