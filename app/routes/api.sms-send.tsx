@@ -1,0 +1,3 @@
+﻿import type { ActionFunctionArgs } from "react-router";
+import { sendSms } from "../lib/sms";
+export async function action({ request, context }: ActionFunctionArgs) { const env = context.cloudflare.env as Env; const { phone, message, customer_id } = await request.json(); if (!phone||!message) return Response.json({ success: false, error: "Phone and message required" }, { status: 400 }); const r = await sendSms(env.DB, phone, message); await env.DB.prepare("INSERT INTO system_logs (level, category, message, entity_type, entity_id) VALUES ('info','system',?, 'customer', ?)").bind("SMS to "+phone+": "+message.substring(0,80), customer_id||null).run(); return Response.json(r); }

@@ -1,0 +1,2 @@
+﻿import type { LoaderFunctionArgs } from "react-router";
+export async function loader({ context, request }: LoaderFunctionArgs) { const env = context.cloudflare.env as Env; const url = new URL(request.url); const limit = url.searchParams.get("limit")||"50"; const {results} = await env.DB.prepare("SELECT * FROM system_logs WHERE category='system' AND message LIKE 'SMS%' ORDER BY created_at DESC LIMIT ?").bind(+limit).all(); return Response.json({ success: true, data: results }); }

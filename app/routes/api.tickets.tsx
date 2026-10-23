@@ -1,0 +1,3 @@
+﻿import type { LoaderFunctionArgs } from "react-router";
+import { getTickets } from "../lib/db";
+export async function loader({ context, request }: LoaderFunctionArgs) { const env = context.cloudflare.env as Env; const url = new URL(request.url); const cid = url.searchParams.get("customer_id"); if (cid) { const {results} = await env.DB.prepare("SELECT t.*, s.name as assigned_name FROM tickets t LEFT JOIN staff s ON t.assigned_to=s.id WHERE t.customer_id=? ORDER BY t.created_at DESC").bind(+cid).all(); return Response.json({ success: true, data: results }); } return Response.json({ success: true, data: await getTickets(env.DB) }); }
